@@ -60,4 +60,28 @@ document.addEventListener("DOMContentLoaded", function() {
             translucentSlide.classList.remove('show');
         }
     });
+
+    signupForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        
+        // Get form elements
+        var username = document.getElementById('first_name').value;
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        var confirmPassword = document.getElementById('confirm_password').value;
+        
+        // Basic validation
+        if (username && email && password && confirmPassword) {
+            if (password === confirmPassword) {
+                // Redirect to "xyz" link if all fields are filled and passwords match
+                window.location.href = 'https://icarprice.streamlit.app/';
+            } else {
+                // Alert user if passwords do not match
+                alert('Passwords do not match.');
+            }
+        } else {
+            // Alert user to fill all fields
+            alert('Please fill in all fields.');
+        }
+    });
 });
