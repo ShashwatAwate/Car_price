@@ -14,14 +14,12 @@
         </video>
     </div>
     <nav class="nav-bar">
-        <div class="nav-container">
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Customer Care</a></li>
-                <li><a href="#">Report</a></li>
-            </ul>
-        </div>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Customer Care</a></li>
+            <li><a href="#">Report</a></li>
+        </ul>
     </nav>
     <div class="login-button-container">
         <button id="login-button" class="login-button">SIGN UP</button>
@@ -58,4 +56,78 @@
     </div>
     <script src="script.js"></script>
 </body>
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+    
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCDBDzKlpR2tp-iU3d3mE-X633_tst7RFQ",
+        authDomain: "carpricedatabase-cf2d7.firebaseapp.com",
+        databaseURL: "https://carpricedatabase-cf2d7-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "carpricedatabase-cf2d7",
+        storageBucket: "carpricedatabase-cf2d7.appspot.com",
+        messagingSenderId: "936522809834",
+        appId: "1:936522809834:web:b911fcdad821b409ef3293",
+        measurementId: "G-K6ZGY6G8ZC"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Function to handle user sign-up
+    async function signUp(email, password, firstName, lastName) {
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            console.log("Sign-up successful!", user);
+            window.location.href = "https://icarprice.streamlit.app/#welcome-to-the-car-price-prediction-app";
+            // Save additional user information in Firestore
+            await setDoc(doc(db, "users", user.uid), {
+                email: user.email,
+                firstName: firstName,
+                lastName: lastName
+                
+            });
+
+            console.log("User data saved successfully!");
+        } catch (error) {
+            console.error("Error during sign-up:", error.code, error.message);
+        }
+    }
+
+    // Function to handle user sign-in
+    async function signIn(email, password) {
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            console.log("Sign-in successful!", user);
+            window.location.href = "https://icarprice.streamlit.app/#welcome-to-the-car-price-prediction-app";
+        } catch (error) {
+            console.error("Error during sign-in:", error.code, error.message);
+            document.getElementById('error-message').textContent = "Wrong password";
+        }
+    }
+
+    // Event listeners for form submissions
+    document.getElementById('signup-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const firstName = document.getElementById('first_name').value;
+        const lastName = document.getElementById('last_name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        signUp(email, password, firstName, lastName);
+    });
+
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login_email').value;
+        const password = document.getElementById('login_password').value;
+        signIn(email, password);
+    });
+</script>
 </html>
